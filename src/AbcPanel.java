@@ -18,7 +18,7 @@ public class AbcPanel extends JPanel {
             lettersArr[i] = new JButton(lblStr);
             add(lettersArr[i]);
         }
-        this.setLayout(new GridLayout(11,0, 5,5));
+        this.setLayout(new GridLayout(11,0, 10,10));
 
     }
 

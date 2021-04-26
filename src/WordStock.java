@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -8,9 +12,13 @@ public class WordStock {
     /**
      * Construcor of array list of game words
      * @param sc - reads the words from a text file
+     * @param filePath
      */
-    public WordStock(Scanner sc) {
-        while (sc.hasNext()){
+    public WordStock(String filePath) throws FileNotFoundException {
+        File file = new File(filePath);
+        Scanner sc = new Scanner(file);
+
+        while (sc.hasNextLine()){
             _wordsArr.add(new String(sc.nextLine()));
             System.out.println();
         }

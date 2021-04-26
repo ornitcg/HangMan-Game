@@ -1,4 +1,8 @@
 import javax.swing.*;
+/*
+    This class chooses the word to be guessed in the HangMan game
+ */
+
 
 public class GameWord extends JPanel {
     private String _word;
