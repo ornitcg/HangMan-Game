@@ -19,8 +19,9 @@ public class WordStock {
         Scanner sc = new Scanner(file);
 
         while (sc.hasNextLine()){
-            _wordsArr.add(new String(sc.nextLine()));
-            System.out.println();
+            String word = new String(sc.nextLine());
+            _wordsArr.add(word);
+            System.out.println(word);
         }
     }
 
@@ -30,7 +31,7 @@ public class WordStock {
      * @return the randomly chosen word for game
      */
     public String getRandomWord() {
-        int randIndex = ((int) Math.random() * 1000) % _wordsArr.size();
+        int randIndex = ((int) (Math.random() * 12345) % _wordsArr.size());
         return _wordsArr.get(randIndex);
     }
 
