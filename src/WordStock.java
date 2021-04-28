@@ -21,7 +21,7 @@ public class WordStock {
         while (sc.hasNextLine()){
             String word = new String(sc.nextLine());
             _wordsArr.add(word);
-            System.out.println(word);
+//            System.out.println(word);
         }
     }
 

@@ -17,7 +17,6 @@ public class BlankWord extends JPanel {
         _wordLettersNum = countLetters(_word);
         _wordBlanks = createWordBlanks(_word);
         _correctLettersNum = 0;
-
     }
 
     private int countLetters(String word) {
@@ -45,13 +44,16 @@ public class BlankWord extends JPanel {
         return blankWord;
     }
 
-    public String get_wordDisplay() {
+    public String getWordDisplay() {
         String blankWord = "";
-        int len = get_word().length();
+        int len = _wordBlanks.length();
         for(int i = 0 ; i < len ; i++){
-            if ( get_word().charAt(i) == ' ')
+            char letter = _wordBlanks.charAt(i);
+            if ( letter == ' ')
                 blankWord = blankWord + "    ";
-            else blankWord = blankWord + "_ ";
+            else if ( letter == '_')
+                blankWord = blankWord + "_ ";
+            else blankWord = blankWord + letter + " ";
         }
         return blankWord;
     }
@@ -62,20 +64,26 @@ public class BlankWord extends JPanel {
      * @param letter the guessed letter
      * @return true if letter exists in word and false otherwise
      */
-    public boolean tryLetter(char letter){
-        int len = get_word().length();
-        char charInWord  ; // stand for for answer and question
-        for(int i = 0 ; i < len ; i++){
-            charInWord =  get_word().charAt(i);
-            if (letter == (char) charInWord )
-                set_wordBlanks(i, letter);
-            else return false;
+    public boolean tryLetter(String letter){
+        Boolean res = _word.contains(letter);
+        return (res);
+    }
+
+    /**
+     * updates the correctly guessed letters in the _wordBlanks
+     * @param letterStr
+     */
+    public void updateWordBlanks(String letterStr) {
+        char letter = letterStr.charAt(0);
+        for (int i=0 ; i < _wordLettersNum; i++){
+            if (_word.charAt(i) == letter)
+                set_wordBlanks(i , letter);
         }
-        return true;
+        System.out.println(_wordBlanks);
     }
 
 
-////////////////////////////////////// Getters & Setters ////////////////////////////////////////////
+    ////////////////////////////////////// Getters & Setters ////////////////////////////////////////////
     public String get_word() {
         return _word;
     }
@@ -89,6 +97,7 @@ public class BlankWord extends JPanel {
     public void set_wordBlanks(int index, char letter) {
         StringBuilder sb = new StringBuilder(_wordBlanks);
         sb.setCharAt(index, letter);
+        _wordBlanks = sb.toString();
     }
 
     public int get_wordLettersNum() {

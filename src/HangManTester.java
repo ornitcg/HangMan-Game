@@ -20,10 +20,10 @@ public class HangManTester {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // the option to close the window
         frame.setVisible(true); //make the whole thing show on screen
 
-        while(true){
-            mainPanel.repaint();
-
-        }
+//        while(true){
+//            mainPanel.repaint();
+//
+//        }
 
     }
 
