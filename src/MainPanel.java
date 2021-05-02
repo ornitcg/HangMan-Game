@@ -125,115 +125,146 @@ public class MainPanel extends JPanel {
         add(bottomP, BorderLayout.SOUTH);
     }
 
+    /**
+     * Listener to all buttons on MainPanel
+     */
     private class ButtonListener implements ActionListener{
-
         @Override
         public void actionPerformed(ActionEvent e) {
             JButton pressedButton = (JButton) e.getSource();
             int len = _lettersArr.size();
 
             if (pressedButton == _exitButton){            // ********** EXIT BUTTON ***********
-                System.out.println("You chose to exit");
                 System.exit(0);
             }
             else if (pressedButton == _startButton){     // ********** START BUTTON ***********
-                String randWord = _wordStock.getRandomWord();
-                _startButton.setText("PLAY AGAIN");
-                _mistakesCount = 0;
-                _gallowPanel.set_mistakes(_mistakesCount);
-                _gallowPanel.repaint();
-
-
-                System.out.println("DEBUG - the random word is: " + randWord); // generate new word from words list
-                set_word( randWord); // generate new word from words list
-
-                String mysteryWord = _word.getWordDisplay();
-                _mysteryWordLabel.setText(mysteryWord);         // updates the word panel
-                _mysteryWordLabel.setForeground(Color.BLACK);
-                _msgToUser.setForeground(Color.decode(HAPPY_GREEN));
-
-                _msgToUser.setText("GUESS A LETTER");
-                blockLtrButtons(false ); // to unblock the letter buttons
-
+                restartGame();
             }
-
             else {  // ********** GUESS LETTER ***********
+                String letter;
+                String wordDisplay;
+                boolean isRightGuess;
+                JButton tmpButton;
+
+
                 for (int i = 0; i < len; i++) {
-                    JButton tmpButton = _lettersArr.get(i);
+                    tmpButton = _lettersArr.get(i);
                     if (pressedButton == tmpButton) {
-                        tmpButton.setBackground(Color.CYAN);
-                        tmpButton.setEnabled(false); // to block a single button
-                        String letter = pressedButton.getText().toLowerCase();
-                        System.out.println(letter);
-                        boolean isLetterInWord = _word.tryLetter(letter);
+                        disableLetter(tmpButton);
 
-                        if (isLetterInWord){   // ********** RIGHT GUESS  ***********
-                            _word.updateWordBlanks(letter);
+                        letter = pressedButton.getText().toLowerCase();
+                        isRightGuess = _word.tryLetter(letter);
 
-                            _msgToUser.setText("VERY GOOD! CONTINUE!");
-                            _msgToUser.setForeground(Color.decode(HAPPY_GREEN));
-
-                            String wordDisplay = _word.getWordDisplay();
-                            System.out.println("DEBUG " + wordDisplay);
-                            _mysteryWordLabel.setText(_word.getWordDisplay() );
-                            if (! wordDisplay.contains("_")){
-                                _msgToUser.setText("YOU ARE ALIVE!");
-                                _msgToUser.setForeground(Color.decode(HAPPY_GREEN));
-
-                                _mysteryWordLabel.setForeground(Color.decode(HAPPY_GREEN));
-                                blockLtrButtons(true);
-                            }
-                        }
+                        if (isRightGuess){   // ********** RIGHT GUESS  ***********
+                            displayMsg("right");
+                            _word.updateWordBlanks(letter);   // adds the guessed leter to the displayed word
+                            wordDisplay = _word.getWordDisplay();
+                            _mysteryWordLabel.setText(wordDisplay );
+                            checkAndDisplayWinning(wordDisplay);
+                        } // end if right guess
                         else {                 // ********** WRONG GUESS  ***********
-                            _msgToUser.setText("WRONG! TRY AGAIN!");
-                            _msgToUser.setForeground(Color.RED);
-
-                            _mistakesCount++;
-                            if (_mistakesCount == 6){
-                                _gallowPanel.set_mistakes(_mistakesCount);
-                                _gallowPanel.repaint();
-                                _msgToUser.setText("YOU ARE DEAD!");
-                                _msgToUser.setForeground(Color.RED);
-                                _mysteryWordLabel.setForeground(Color.RED);
-                                blockLtrButtons(true);
-                            }
-                            else {
-                                _gallowPanel.set_mistakes(_mistakesCount);
-                                _gallowPanel.repaint();
-                                System.out.println("DEBUG - hang");
-
-                            }
-                        }
-                    }
-
-                }
-            }
-
-        }
-
+                            displayMsg("wrong");
+                            checkAndDisplayLosing();
+                        }//end else wrong guess
+                    } // end if pressedButton
+                }//end for loop
+            }// end else guess letter
+        }// end actionPerformed
     } // end ButtonListener class
 
+
+    /**
+     * Disables a button of letter that was already pressed
+     * @param tmpButton
+     */
+    private void disableLetter(JButton tmpButton) {
+        tmpButton.setBackground(Color.CYAN);
+        tmpButton.setEnabled(false); // to block a single button
+    }
+
+    /**
+     * Restarts game
+     */
+    private void restartGame() {
+        String randWord = _wordStock.getRandomWord();
+        _startButton.setText("PLAY AGAIN");
+        _mistakesCount = 0;
+        _gallowPanel.set_mistakes(_mistakesCount);
+        _gallowPanel.repaint();
+
+        set_word( randWord); // generate new word from words list
+        _mysteryWordLabel.setText(_word.getWordDisplay());         // updates the word panel
+        _mysteryWordLabel.setForeground(Color.BLACK);
+        _msgToUser.setForeground(Color.decode(HAPPY_GREEN));
+        _msgToUser.setText("GUESS A LETTER");
+        blockLtrButtons(false ); // to unblock the letter buttons
+    }
+
+    /**
+     * Displayes Message to user
+     * @param guessStatus
+     */
+    private void displayMsg(String guessStatus) {
+        if (guessStatus.equals("right")){
+            _msgToUser.setText("VERY GOOD! CONTINUE!");
+            _msgToUser.setForeground(Color.decode(HAPPY_GREEN));
+        }
+        else {// wrong
+            _msgToUser.setText("WRONG! TRY AGAIN!");
+            _msgToUser.setForeground(Color.RED);
+            _mistakesCount++;
+        }
+    }
+
+    /**
+     * when a mistake happens:
+     * displays 'Dead' if there are too any mistakes
+     * if not then displays 'Wrong' and adds another part to hangman
+     */
+    private void checkAndDisplayLosing() {
+        _gallowPanel.set_mistakes(_mistakesCount);
+        _gallowPanel.repaint();
+
+        if (_mistakesCount == 6){
+            _gallowPanel.repaint();
+            _msgToUser.setText("YOU ARE DEAD!");
+            _msgToUser.setForeground(Color.RED);
+            _mysteryWordLabel.setForeground(Color.RED);
+            blockLtrButtons(true);
+        }
+    }
+
+    /**
+     * Reaction to case when all letters are guessed right
+     * @param wordDisplay
+     */
+    private void checkAndDisplayWinning(String wordDisplay) {
+        if (! wordDisplay.contains("_")){ // check if all letters in the word where guessed
+            _msgToUser.setText("YOU ARE ALIVE!");
+            _msgToUser.setForeground(Color.decode(HAPPY_GREEN));
+            _mysteryWordLabel.setForeground(Color.decode(HAPPY_GREEN));
+            blockLtrButtons(true);
+        }
+    }
+
+    /**
+     * disables all the letters Buttons
+     * @param b
+     */
     private void blockLtrButtons(boolean b) {
         int len = _lettersArr.size();
         for (int i = 0; i < len; i++) {
             JButton tmpButton = _lettersArr.get(i);
-            tmpButton.setBackground(null);
+            tmpButton.setBackground(null);  // return buttons to their initial look
             tmpButton.setEnabled(!b);
         }
 
     }
-    public void addBodyPart(int mistakesCount) {
-        switch (mistakesCount){
-            case 1:
-            case 2:
 
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-        }
-    }
-
+    /**
+     * Setter
+     * @param word
+     */
     public void set_word(String word) {
         this._word = new BlankWord(word);
     }

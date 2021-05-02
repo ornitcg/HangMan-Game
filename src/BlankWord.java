@@ -7,27 +7,15 @@ import javax.swing.*;
 public class BlankWord extends JPanel {
     private String _word;
     private String _wordBlanks;
-    private int _wordLettersNum;
-    private int _correctLettersNum;
 
 
 
     public BlankWord(String word){
         _word = new String(word);
-        _wordLettersNum = countLetters(_word);
         _wordBlanks = createWordBlanks(_word);
-        _correctLettersNum = 0;
     }
 
-    private int countLetters(String word) {
-        int len = get_word().length();
-        int count = 0;
-        for(int i = 0 ; i < len ; i++){
-            if ( word.charAt(i) != ' ')
-                count+=1;
-        }
-        return count;
-    }
+
 
     /**
      * Creates a  String of blanks for the chosen word to be guessed in the game
@@ -71,15 +59,15 @@ public class BlankWord extends JPanel {
 
     /**
      * updates the correctly guessed letters in the _wordBlanks
-     * @param letterStr
+     * @param letterStr - a letter in String format
      */
     public void updateWordBlanks(String letterStr) {
         char letter = letterStr.charAt(0);
-        for (int i=0 ; i < _wordLettersNum; i++){
+        int len = _word.length();
+        for (int i=0 ; i < len; i++){
             if (_word.charAt(i) == letter)
-                set_wordBlanks(i , letter);
+                set_wordBlanks(i , Character.toUpperCase(letter));
         }
-        System.out.println(_wordBlanks);
     }
 
 
@@ -93,23 +81,16 @@ public class BlankWord extends JPanel {
     }
 
 
-
+    /**
+     * updates the given letter at the given index, instead of a blank
+     * @param index
+     * @param letter
+     */
     public void set_wordBlanks(int index, char letter) {
         StringBuilder sb = new StringBuilder(_wordBlanks);
         sb.setCharAt(index, letter);
         _wordBlanks = sb.toString();
     }
 
-    public int get_wordLettersNum() {
-        return _wordLettersNum;
-    }
 
-
-    public int get_correctLettersNum() {
-        return _correctLettersNum;
-    }
-
-    public void set_correctLettersNum(int _correctLettersNum) {
-        this._correctLettersNum = _correctLettersNum;
-    }
 }

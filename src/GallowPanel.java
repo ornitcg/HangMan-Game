@@ -25,7 +25,6 @@ public class GallowPanel extends JPanel {
         int ropeWidth = 4;
 
         g.fillRect(x + 200 + (int)(ropeWidth/2) , y +20 , ropeWidth, (int) (height * 0.2) ); // draw rope
-        System.out.println("mistakes number DEBUG: " +_mistakes );
 
         int headDiameter = 50;
         if (_mistakes > 0) {
@@ -42,13 +41,13 @@ public class GallowPanel extends JPanel {
         ((Graphics2D)g).setStroke(new BasicStroke(5));
 
         if (_mistakes > 2) // draw right arm
-            g.drawLine(bodyX,bodyY,bodyX + headDiameter + bodyW, bodyY+headDiameter );
+            g.drawLine(bodyX + bodyW ,bodyY,bodyX + headDiameter +bodyW , bodyY+headDiameter );
         if (_mistakes > 3) // draw left arm
             g.drawLine(bodyX,bodyY,bodyX - headDiameter , bodyY+headDiameter );
 
         bodyY += bodyH;
         if (_mistakes > 4)//draw right leg
-            g.drawLine(bodyX,bodyY,bodyX + headDiameter + bodyW, bodyY+headDiameter );
+            g.drawLine(bodyX + bodyW ,bodyY,bodyX + headDiameter+bodyW , bodyY+headDiameter );
         if (_mistakes > 5)//draw left leg
             g.drawLine(bodyX,bodyY,bodyX - headDiameter, bodyY+headDiameter );
 
